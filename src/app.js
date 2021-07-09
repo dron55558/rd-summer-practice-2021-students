@@ -751,63 +751,68 @@
     (function (game) {
         game.GameView = (function() {
             function getGame() {
-                /**
+               /**
                  * TODO Task1. Объявление переменных и их связка с DOM
                  *  Для получения доступа к DOM элементу следует
                  *  использовать document.getElementById('elementId')
                  *  можно использовать $('selector')
                  */
                 return {
-                    // $gameCaption: ,
-                    // $switchTimer: ,
-                    // team1: {
-                    //     $container: ,
-                    //     $caption: ,
-                    //     $players: ,
-                    //     $lives: ,
-                    //     $coins:
-                    // },
-                    // team2: {
-                    //     $container: ,
-                    //     $caption: ,
-                    //     $players: ,
-                    //     $lives: ,
-                    //     $coins:
-                    // },
-                    // mapBuffer: null,
-                    // $mapCanvas: ,
-                    // mapCellSize: 25
+                    $gameCaption: $(`#gameCaption`),
+                    $switchTimer: $(`#switchTimer`),
+                    team1: {
+                        $container: $(`#container`),
+                        $caption: $(`#caption`),
+                        $players: $(`#players`),
+                        $lives: $(`#lives`),
+                        $coins: $(`#coins`)
+                    },
+                    team2: {
+                        $container: $(`#container`),
+                        $caption: $(`#caption`),
+                        $players: $(`#players`),
+                        $lives: $(`#lives`),
+                        $coins: $(`#coins`)
+                    },
+                    mapBuffer: null,
+                    $mapCanvas: $(`mapCanvas`),
+                    mapCellSize: 25
                 };
             }
             function getButtons() {
                 // TODO Task1.2 Объявление переменных и их связка с DOM
                 return {
-                    // $btnGameList:,
-                    // $btnStart:,
-                    // $btnConnect:,
-                    // $btnConnectPolice:,
-                    // $btnConnectThief:,
-                    // $btnLeave:,
-                    // $btnPause:,
-                    // $btnCancel:
+                    $btnGameList: $(`btnGameList`),
+                    $btnStart: $(`btnStart`),
+                    $btnConnect: $(`btnConnect`),
+                    $btnConnectPolice: $(`btnConnectPolice`),
+                    $btnConnectThief: $(`btnConnectThief`),
+                    $btnLeave: $(`btnLeave`),
+                    $btnPause: $(`btnPause`),
+                    $btnCancel: $(`btnCancel`)
                 };
             }
             function getImages() {
                 // TODO Task1.3 Объявление переменных и их связка с DOM
                 return {
-                    // imgHeart: ,
-                    // imgCoin: ,
-                    // imgPolice: ,
-                    // imgPoliceSelf: ,
-                    // imgThief: ,
-                    // imgThiefSelf: ,
-                    // imgSwitch:
+                    imgHeart: $(`#imgHeart`),
+                    imgCoin: $(`#imgCoin`),
+                    imgPolice: $(`#imgPolice`),
+                    imgPoliceSelf: $(`#imgPoliceSelf`),
+                    imgThief: $(`#imgThief`),
+                    imgThiefSelf: $(`#imgThiefSelf`),
+                    imgSwitch: $(`#imgSwitch`)
                 };
             }
             function setMapCanvasSizing($canvas, width, height) {
                 /**
                  * TODO Task 2. Опишите функцию которая задаст размеры игрового поля
                  */
+                $canvas.height = `${height}px`;
+                $canvas.width = `${width}px`;
+                $canvas.style.height = `${height}px`
+                $canvas.style.width = `${width}px`;
+                
                 return $canvas;
             }
             function drawMapField(canvas, map, width, height, cellSize) {
@@ -863,6 +868,10 @@
                  */
                 // var c = this.state.callbacks;
                 // c.captionChanged
+                var c = this.state.callbacks;
+                c.captionChanged.add(function (name, status){
+                    this.setGameCaption(name, status);
+                }.bind(this));
                 // c.invalidGame
                 // c.mapChanged
                 // c.playerChanged
@@ -876,7 +885,7 @@
                 // c.timerChanged
             };
             GameView.prototype.bindButtons = function () {
-                // TODO Task 3.1 повешайте обработчики событий
+                // TODO Task 3.1 повесьте обработчики событий
                 // var btns = this.btns;
                 // var $lastKey = -1;
                 // btns.$btnGameList.
@@ -1009,7 +1018,7 @@
                  */
                 this.game.$gameCaption
                     .empty()
-                    .append($(app.utils.t(
+                    .append($(app.utils.t( //Нужно добавить эту строку на нашу страницу и поменять строку на нашу
                         "<div class='game-caption-name'>{name} <span class='game-caption-status game-caption-status-{status}'>{statusName}</span></div>",
                         {name: name, status: status, statusName: app.utils.getStatusName(status)})));
             };
@@ -1036,7 +1045,7 @@
                 /**
                  * TODO: Task 6. Поменяйте под вашу вёрстку
                  */
-                return $(app.utils.t(
+                return $(app.utils.t( // Тут также поменять под нашу (Добавить нам сначала)
                     "<div id='player{playerId}' class='game-player game-player-status-{status}'>" +
                         "<span class='game-player-name'>{name}</span>" +
                         " [<span class='game-player-coins'>{coins}</span>;" +
@@ -1129,17 +1138,28 @@
                 /**
                  * TODO: Task 9. Опишите доступность элементов при загрузке игры $container $error $loading
                  */
+                this.$container.addClass("hidden");
+                this.$error.addClass("hidden");
+                this.$loading.removeClass("hidden");
             };
+                
             GameView.prototype.showError = function () {
                 /**
                  * TODO: Task 10. Опишите доступность элементов при загрузке игры $container $error $loading
-                 */
-            };
-            GameView.prototype.show = function () {
+                */
+                this.$container.addClass("hidden");
+                this.$loading.addClass("hidden");
+                this.$error.removeClass("hidden");
+                };
+
+                GameView.prototype.show = function () {
                 /**
                  * TODO: Task 11. Опишите доступность элементов при загрузке игры $container $error $loading
                  */
-            };
+                this.$loading.addClass("hidden");
+                this.$error.addClass("hidden");
+                this.$container.removeClass("hidden");
+                };
 
             return GameView;
         })();
