@@ -13,24 +13,25 @@
 </head>
 
 <body>
-    <!-- TODO: Task 0. Построить вёрстку приложения по макету используя для сетки bootstrap -->
-    <div class="container">
-        <section class="game-section">
-            <div class="header">
-                <span>Полицейские и Мошенники</span>
-            </div>
-            <div class="progress-area">
-                <div class="game-caption">
-                    <div class=''>{nameGame}
-                        <span class='game-caption-status game-caption-status-{status}'>{statusNameGame}</span>
-                    </div>
-                </div>
-                <div class="time">
-                    <span>00:00</span>
+<!-- TODO: Task 0. Построить вёрстку приложения по макету используя для сетки bootstrap -->
+<div class="container">
+    <section class="game-section">
+        <div class="header">
+            <span>Полицейские и Мошенники</span>
+        </div>
+        <div class="progress-area">
+            <div class="game-caption">
+                <div class=''>{nameGame}
+                    <span class='game-caption-status game-caption-status-{status}'>{statusNameGame}</span>
                 </div>
             </div>
-            <div class="game-area">
-                <div class="left-team team-area">
+            <div class="time">
+                <span>00:00</span>
+            </div>
+        </div>
+        <div class="game-area">
+            <div class="stats-game">
+                <div class="team-area-1">
                     <div class="team-header">
                         <span>Команда №1</span>
                     </div>
@@ -39,18 +40,31 @@
                             <li><span>Жизни: </span> <span class="info-lifes">0</span></li>
                             <li><span>Монеты: </span> <span class="info-money">0</span></li>
                         </ul>
-                        <br>
-                        <br>
-                        <div class="team-header">
-                            <span>Команда №2</span>
+                        <div class="game-player">
+                            <span class="game-player-name">Test</span> (
+                            <span class="game-player-coins">0</span>;
+                            <span class="game-player-lives">0</span>;
+                            <span class="game-player-deaths">0</span>)
                         </div>
-                        <ul class="info-list">
-                            <li><span>Жизни: </span> <span class="info-lifes">0</span></li>
-                            <li><span>Монеты: </span> <span class="info-money">0</span></li>
-                        </ul>
                     </div>
                 </div>
-                <div class="game-map">
+                <div class="team-area-2">
+                    <div class="team-header">
+                        <span>Команда №2</span>
+                    </div>
+                    <ul class="info-list">
+                        <li><span>Жизни: </span> <span class="info-lifes">0</span></li>
+                        <li><span>Монеты: </span> <span class="info-money">0</span></li>
+                    </ul>
+                    <div class="game-player">
+                        <span class="game-player-name">Test</span> (
+                        <span class="game-player-coins">0</span>;
+                        <span class="game-player-lives">0</span>;
+                        <span class="game-player-deaths">0</span>)
+                    </div>
+                </div>
+            </div>
+            <div class="game-map">
 
                 </div>
 
