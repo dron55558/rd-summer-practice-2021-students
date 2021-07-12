@@ -743,59 +743,59 @@
     (function(game) {
         game.GameView = (function() {
             function getGame() {
-                /**
+               /**
                  * TODO Task1. Объявление переменных и их связка с DOM
                  *  Для получения доступа к DOM элементу следует
                  *  использовать document.getElementById('elementId')
                  *  можно использовать $('selector')
                  */
                 return {
-                    // $gameCaption: ,
-                    // $switchTimer: ,
-                    // team1: {
-                    //     $container: ,
-                    //     $caption: ,
-                    //     $players: ,
-                    //     $lives: ,
-                    //     $coins:
-                    // },
-                    // team2: {
-                    //     $container: ,
-                    //     $caption: ,
-                    //     $players: ,
-                    //     $lives: ,
-                    //     $coins:
-                    // },
-                    // mapBuffer: null,
-                    // $mapCanvas: ,
-                    // mapCellSize: 25
+                    $gameCaption: $(`#gameCaption`),
+                    $switchTimer: $(`#switchTimer`),
+                    team1: {
+                        $container: $(`#container`),
+                        $caption: $(`#caption`),
+                        $players: $(`#players`),
+                        $lives: $(`#lives`),
+                        $coins: $(`#coins`)
+                    },
+                    team2: {
+                        $container: $(`#container`),
+                        $caption: $(`#caption`),
+                        $players: $(`#players`),
+                        $lives: $(`#lives`),
+                        $coins: $(`#coins`)
+                    },
+                    mapBuffer: null,
+                    $mapCanvas: $(`mapCanvas`),
+                    mapCellSize: 25
                 };
             }
 
             function getButtons() {
                 // TODO Task1.2 Объявление переменных и их связка с DOM
                 return {
-                    // $btnGameList:,
-                    // $btnStart:,
-                    // $btnConnect:,
-                    // $btnConnectPolice:,
-                    // $btnConnectThief:,
-                    // $btnLeave:,
-                    // $btnPause:,
-                    // $btnCancel:
+                    $btnGameList: $(`btnGameList`),
+                    $btnStart: $(`btnStart`),
+                    $btnConnect: $(`btnConnect`),
+                    $btnConnectPolice: $(`btnConnectPolice`),
+                    $btnConnectThief: $(`btnConnectThief`),
+                    $btnLeave: $(`btnLeave`),
+                    $btnPause: $(`btnPause`),
+                    $btnCancel: $(`btnCancel`)
                 };
             }
 
             function getImages() {
                 // TODO Task1.3 Объявление переменных и их связка с DOM
                 return {
-                    // imgHeart: ,
-                    // imgCoin: ,
-                    // imgPolice: ,
-                    // imgPoliceSelf: ,
-                    // imgThief: ,
-                    // imgThiefSelf: ,
-                    // imgSwitch:
+                    imgHeart: $(`#imgHeart`),
+                    imgCoin: $(`#imgCoin`),
+                    imgPolice: $(`#imgPolice`),
+                    imgPoliceSelf: $(`#imgPoliceSelf`),
+                    imgThief: $(`#imgThief`),
+                    imgThiefSelf: $(`#imgThiefSelf`),
+                    imgSwitch: $(`#imgSwitch`)
                 };
             }
 
@@ -803,6 +803,11 @@
                 /**
                  * TODO Task 2. Опишите функцию которая задаст размеры игрового поля
                  */
+                $canvas.height = `${height}px`;
+                $canvas.width = `${width}px`;
+                $canvas.style.height = `${height}px`
+                $canvas.style.width = `${width}px`;
+                
                 return $canvas;
             }
 
@@ -858,62 +863,103 @@
                  *              повешайте обработчики событий на кнопки
                  *              нажатия на кнопки это событие click
                  */
-                // var c = this.state.callbacks;
-                // c.captionChanged
-                // c.invalidGame
-                // c.mapChanged
-                // c.playerChanged
-                // c.statusChanged
-                // c.synced
-                // c.syncing
-                // c.teamCaptionChanged
-                // c.teamCoinsChanged
-                // c.teamLivesChanged
-                // c.teamPlayersChanged
-                // c.timerChanged
-            };
-            GameView.prototype.bindButtons = function() {
-                // TODO Task 3.1 повешайте обработчики событий
-                // var btns = this.btns;
-                // var $lastKey = -1;
-                // btns.$btnGameList.
-                // btns.$btnStart.
-                // btns.$btnConnect.
-                // btns.$btnConnectPolice.
-                // btns.$btnConnectThief.
-                // btns.$btnLeave.
-                // btns.$btnPause.
-                // btns.$btnCancel.
-                $(window).on('keydown', function(event) {
-                    if ($lastKey === event.keyCode) {
-                        return;
-                    }
+                 var c = this.state.callbacks;
+                 c.captionChanged.add(function(name, status) {
+                     this.setGameCaption(name, status);
+                 }.bind(this));
+                 c.invalidGame.add(function() {
+                     this.showError();
+                 }.bind(this));
+                 c.mapChanged.add(function(map) {
+                     this.updateMap(map);
+                 }.bind(this));
+                 c.playerChanged.add(function() {
+                     this.updatePlayer(player);
+                 }.bind(this));
+                 c.statusChanged.add(function() {
+                     this.setButtons(status);
+                     this.toggleRotation(status);
+                 }.bind(this));
+                 c.synced.add(function() {
+                     this.show();
+                 }.bind(this));
+                 c.syncing.add(function() {
+                     this.showLoading();
+                 }.bind(this));
+                 c.teamCaptionChanged.add(function(team, $team) {
+                     this.setTeamCaption(team, $team);
+                 }.bind(this));
+                 c.teamCoinsChanged.add(function(data) {
+                     setTeamCoins(data.teamId, data.coins);
+                 }.bind(this));
+                 c.teamLivesChanged.add(function(data) {
+                     this.setTeamLives(data.teamId, data.lives)
+                 }.bind(this));
+                 c.teamPlayersChanged.add(function() {
+                     this.updateTeam(team);
+                 }.bind(this));
+                 c.timerChanged.add(function(data) {
+                     this.setTimer(data);
+                 }.bind(this));
+             };
+             GameView.prototype.bindButtons = function () {
+                 // TODO Task 3.1 повешайте обработчики событий
+                 var btns = this.btns;
+                 var $lastKey = -1;
+                 btns.$btnGameList.click(function() {
+                     document.location.replace("index.html");
+                 });
+                 btns.$btnStart.click(function() {
+                     this.state.game.start();
+                 });
+                 btns.$btnConnect.click(function(){
+                     this.state.game.join(GameApi.GameTeamRole.random);
+                 });
+                 btns.$btnConnectPolice.click(function(){
+                     this.state.game.join(GameApi.GameTeamRole.police);
+                 });
+                 btns.$btnConnectThief.click(function(){
+                     this.state.game.join(GameApi.GameTeamRole.thief);
+                 });
+                 btns.$btnLeave.click(function(){
+                     this.state.game.leave();
+                 });
+                 btns.$btnPause.click(function(){
+                     this.state.game.pause();
+                 });
+                 btns.$btnCancel.click(function(){
+                     this.state.game.cancel();
+                 });
+                 $(window).on('keydown', function(event) {
+                     if ($lastKey === event.keyCode) {
+                         return;
+                     }
                     /**
                      * TODO Task 4. Вместо event.keyCode начните использовать event.key
                      */
-                    switch (event.keyCode) {
-                        case 32:
+                    switch (event.key) {
+                        case `Space`:
                             event.preventDefault();
                             this.state.game.stopMoving();
                             break;
-                        case 37:
+                        case `ArrowLeft`:
                             event.preventDefault();
                             this.state.game.beginMove(GameApi.MoveDirection.left);
                             break;
-                        case 38:
+                        case `ArrowUp`:
                             event.preventDefault();
                             this.state.game.beginMove(GameApi.MoveDirection.top);
                             break;
-                        case 39:
+                        case `ArrowRight`:
                             event.preventDefault();
                             this.state.game.beginMove(GameApi.MoveDirection.right);
                             break;
-                        case 40:
+                        case `ArrowDown`:
                             event.preventDefault();
                             this.state.game.beginMove(GameApi.MoveDirection.bottom);
                             break;
                     }
-                    //console.log(event);
+                    console.log(event);
                 }.bind(this));
                 $(window).on('keyup', function() {
                     $lastKey = -1;
@@ -1004,34 +1050,36 @@
                 /**
                  * TODO: Task 5. Поменяйте под вашу вёрстку
                  */
-                this.game.$gameCaption
-                    .empty()
-                    .append($(app.utils.t(
-                        "<div class='game-caption-name'>{name} <span class='game-caption-status game-caption-status-{status}'>{statusName}</span></div>", { name: name, status: status, statusName: app.utils.getStatusName(status) })));
-            };
-            GameView.prototype.setTimer = function(data) {
-                var seconds = data.s;
-                var minutes = data.m;
-                var timerState = minutes > 0 || seconds > 30 ? "game-timer-ok" :
-                    seconds > 15 ? "game-timer-warn" : "game-timer-cri";
-                if (seconds < 10) {
-                    seconds = "0" + seconds;
-                }
-                if (minutes < 10) {
-                    minutes = "0" + minutes;
-                }
-                this.game.$switchTimer
-                    .empty()
-                    .append(app.utils.t("<span class='{state}'>{m}:{s}</span>", { state: timerState, m: minutes, s: seconds }));
-            };
-            GameView.prototype.getPlayer = function(player) {
-                var status = player.alive ?
-                    (player.connected ? "ac" : "ad") :
-                    player.connected ? "dc" : "dd";
+                 this.game.$gameCaption
+                 .empty()
+                 .append($(app.utils.t(
+                     "<div class='game-caption-name'>{name} <span class='game-caption-status game-caption-status-{status}'>{statusName}</span></div>",
+                     {name: name, status: status, statusName: app.utils.getStatusName(status)})));
+         };
+         GameView.prototype.setTimer = function (data) {
+             var seconds = data.s;
+             var minutes = data.m;
+             var timerState = minutes > 0 || seconds > 30 ? "game-timer-ok" :
+                 seconds > 15 ? "game-timer-warn" : "game-timer-cri";
+             if (seconds < 10) {
+                 seconds = "0" + seconds;
+             }
+             if (minutes < 10) {
+                 minutes = "0" + minutes;
+             }
+             this.game.$switchTimer
+                 .empty()
+                 .append(app.utils.t("<span class='{state}'>{m}:{s}</span>",
+                     {state: timerState, m: minutes, s: seconds}));
+         };
+         GameView.prototype.getPlayer = function (player) {
+             var status = player.alive ?
+                 (player.connected ? "ac" : "ad") :
+                 player.connected ? "dc" : "dd";
                 /**
                  * TODO: Task 6. Поменяйте под вашу вёрстку
                  */
-                return $(app.utils.t(
+                return $(app.utils.t( // Тут также поменять под нашу (Добавить нам сначала)
                     "<div id='player{playerId}' class='game-player game-player-status-{status}'>" +
                     "<span class='game-player-name'>{name}</span>" +
                     " [<span class='game-player-coins'>{coins}</span>;" +
@@ -1120,21 +1168,33 @@
                  *    this.btns - кнопки тут
                  */
             };
-            GameView.prototype.showLoading = function() {
+            GameView.prototype.showLoading = function () {
+                /**
+                 * TODO: Task 9. Опишите доступность элементов при загрузке игры $container $error $loading
+                 */
                 this.$container.addClass("hidden");
                 this.$error.addClass("hidden");
                 this.$loading.removeClass("hidden");
             };
-            GameView.prototype.showError = function() {
+                
+            GameView.prototype.showError = function () {
+                /**
+                 * TODO: Task 10. Опишите доступность элементов при загрузке игры $container $error $loading
+                */
                 this.$container.addClass("hidden");
                 this.$loading.addClass("hidden");
                 this.$error.removeClass("hidden");
-            };
-            GameView.prototype.show = function() {
+                };
+
+                GameView.prototype.show = function () {
+                /**
+                 * TODO: Task 11. Опишите доступность элементов при загрузке игры $container $error $loading
+                 */
                 this.$loading.addClass("hidden");
                 this.$error.addClass("hidden");
                 this.$container.removeClass("hidden");
-            };
+                };
+
             return GameView;
         })();
     })(app.game = app.game || {});
